@@ -7,6 +7,7 @@ from DANet import DAModule, ChannelAttentionModule, PositionAttentionModule, Sca
 from CBAM import CBAMBlock, ChannelAttention, SpatialAttention
 from CoordAttention import CoordAtt
 from DualAttention import DualAttention
+from SEAttention import SEAttention
 
 
 def main():
@@ -22,6 +23,12 @@ def main():
     # Dual Attention
     a4 = DualAttention(in_dim=512)
 
+    # Self Attention
+    a5 = ScaledDotProductAttention(d_model=49, d_k=512, d_v=49, h=1)
+
+    # SE Attention
+    a6 = SEAttention(channel=512, reduction=16)
+
     # [batch_size, channel, height, width]
     t = (torch.rand(128, 512, 7, 7),)
 
@@ -36,6 +43,12 @@ def main():
 
     flops4 = FlopCountAnalysis(a4, t)
     print(f"Dual Attention FLOPs: {round(flops4.total() / 1e6, 3)} M")
+
+    flops5 = FlopCountAnalysis(a5, 3*(t[0].view((128, 512, -1)),))
+    print(f"Self Attention FLOPs: {round(flops5.total() / 1e6, 3)} M")
+
+    flops6 = FlopCountAnalysis(a6, t)
+    print(f"SE Attention FLOPs: {round(flops6.total() / 1e6, 3)} M")
 
 
 if __name__ == '__main__':
