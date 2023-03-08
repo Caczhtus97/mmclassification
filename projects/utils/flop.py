@@ -51,6 +51,7 @@ def main():
     print(f"SE Attention FLOPs: {round(flops6.total() / 1e6, 3)} M")
 
 
+
 if __name__ == '__main__':
     main()
 

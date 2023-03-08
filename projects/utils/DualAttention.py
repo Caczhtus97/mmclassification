@@ -2,12 +2,13 @@ import numpy as np
 import torch
 import math
 from torch import nn
+from mmcv.runner import BaseModule
 
 
 __all__ = ['PAM_Module', 'CAM_Module']
 
 
-class PAM_Module(nn.Module):
+class PAM_Module(BaseModule):
     """ Position attention module"""
 
     # Ref from SAGAN
@@ -49,7 +50,7 @@ class PAM_Module(nn.Module):
         return out
 
 
-class CAM_Module(nn.Module):
+class CAM_Module(BaseModule):
     """ Channel attention module"""
 
     def __init__(self, in_dim):
@@ -81,10 +82,11 @@ class CAM_Module(nn.Module):
         out = self.gamma * out + x
         return out
 
-class DualAttention(nn.Module):
+class DualAttention(BaseModule):
 
-    def __init__(self, in_dim):
-        super(DualAttention, self).__init__()
+    def __init__(self, in_dim, **kwargs):
+        super(DualAttention, self).__init__(**kwargs)
+        self.out_channels = in_dim
         self.pam = PAM_Module(in_dim)
         self.cam = CAM_Module(in_dim)
 
